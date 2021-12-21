@@ -40,19 +40,32 @@ wget -q $LATEST_URL -O /tmp/consul.zip
 mkdir -p /usr/local/bin
 (cd /usr/local/bin && unzip /tmp/consul.zip)
 echo -e '\e[38;5;198m'"++++ Installed `/usr/local/bin/consul version`"
+########################
+cat <<EOF | sudo tee /lib/systemd/system/consul.service
+[Unit]
+Description="HashiCorp Consul - A service mesh solution"
+Documentation=https://www.consul.io/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/consul/server.hcl
 
-cat <<EOF | sudo tee /etc/init/consul.conf
-description "Consul server process"
+[Service]
+User=consul
+Group=consul
+ExecStart=/usr/local/bin/consul agent -dev -client="0.0.0.0" -bind="0.0.0.0" -enable-script-checks -config-file=/etc/consul/server.hcl -config-dir=/etc/consul.d -log-file=/var/log/consul.log
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=5
 
-start on (local-filesystems and net-device-up IFACE=eth0)
-stop on runlevel [!12345]
-
-respawn
-
-exec nohup consul agent -dev -client="0.0.0.0" -bind="0.0.0.0" -enable-script-checks -config-file=/etc/consul/server.hcl -config-dir=/etc/consul.d > /var/log/consul.log 2>&1
+[Install]
+WantedBy=multi-user.target
 EOF
+#########################
+sudo systemctl enable consul
+sudo systemctl start consul
+sudo systemctl status consul
 
-sudo nohup consul agent -dev -client="0.0.0.0" -bind="0.0.0.0" -enable-script-checks -config-file=/etc/consul/server.hcl -config-dir=/etc/consul.d > /var/log/consul.log 2>&1 &
 sh -c 'sudo tail -f /var/log/consul.log | { sed "/agent: Synced/ q" && kill $$ ;}'
 consul join $VAGRANT_IP
 consul members

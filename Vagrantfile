@@ -64,10 +64,11 @@ Vagrant::configure("2") do |config|
       config.vm.provision "bootstrap", preserve_order: true, type: "shell", privileged: true, inline: <<-SHELL
         echo -e '\e[38;5;198m'"BEGIN BOOTSTRAP $(date '+%Y-%m-%d %H:%M:%S')"
         echo -e '\e[38;5;198m'"running vagrant as #{user}"
-        echo -e '\e[38;5;198m'"vagrant IP "#{machine[:ip]}
+        echo -e '\e[38;5;198m'"vagrant IP #{machine[:ip]}"
         echo -e '\e[38;5;198m'"vagrant fqdn #{machine[:name]}"
         echo -e '\e[38;5;198m'"vagrant index #{index}"
         cd ~\n
+        echo "VAGRANT_IP=#{machine[:ip]}" >> /etc/environment
         grep -q "VAGRANT_IP=#{machine[:ip]}" /etc/environment
         if [ $? -eq 1 ]; then
           echo "VAGRANT_IP=#{machine[:ip]}" >> /etc/environment
