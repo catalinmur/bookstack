@@ -61,9 +61,9 @@ After=network-online.target
 ConditionFileNotEmpty=/etc/consul/server.hcl
 
 [Service]
-User=consul
-Group=consul
-ExecStart=/usr/local/bin/consul agent -dev -client="0.0.0.0" -bind="0.0.0.0" -enable-script-checks -config-file=/etc/consul/server.hcl -config-dir=/etc/consul.d -log-file=/var/log/consul.log
+#User=consul
+#Group=consul
+ExecStart=/usr/local/bin/consul agent -dev -client="0.0.0.0" -bind="0.0.0.0" -enable-script-checks -config-file=/etc/consul/server.hcl -config-dir=/etc/consul.d
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 Restart=on-failure
@@ -75,7 +75,6 @@ EOF
 sudo systemctl enable consul
 sudo systemctl start consul
 sudo systemctl status consul
-sh -c 'sudo tail -f /var/log/consul.log | { sed "/agent: Synced/ q" && kill $$ ;}'
 consul join $VAGRANT_IP
 consul members
 consul info
