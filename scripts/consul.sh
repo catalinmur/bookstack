@@ -2,9 +2,15 @@
 # https://www.nomadproject.io/guides/integrations/consul-connect/index.html
 
 function consul-install() {
+
+############ Installing requirements
+
 sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install curl unzip jq
 mkdir -p /etc/consul
 mkdir -p /etc/consul.d
+
+############ Creating Consul config file
+
 cat <<EOF | sudo tee /etc/consul/server.hcl
 primary_datacenter = "dc1"
 client_addr = "${VAGRANT_IP} 10.0.2.15"
@@ -35,12 +41,17 @@ server_name = "local.consul"
 ui = true
 EOF
 
-LATEST_URL=$(curl -sL https://releases.hashicorp.com/consul/index.json | jq -r '.versions[].builds[].url' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | egrep -v 'rc|ent|beta' | egrep 'linux.*amd64' | sort -V | tail -1)
-wget -q $LATEST_URL -O /tmp/consul.zip
+############### Installing Consul 
+
+LATEST_URL=$(curl -sL https://releases.hashicorp.com/consul/index.json | jq -r '.versions[].builds[].url' | egrep -v 'rc|ent|beta' | egrep 'linux.*amd64' | sort -V | tail -1)
+wget -q $LATEST_URL -O consul.zip
 mkdir -p /usr/local/bin
-(cd /usr/local/bin && unzip /tmp/consul.zip)
+unzip consul.zip -d /usr/local/bin/ && rm consul.zip
+
 echo -e '\e[38;5;198m'"++++ Installed `/usr/local/bin/consul version`"
-########################
+
+######################## Adding Consul Service in systemd
+
 cat <<EOF | sudo tee /lib/systemd/system/consul.service
 [Unit]
 Description="HashiCorp Consul - A service mesh solution"
@@ -61,18 +72,20 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
-#########################
 sudo systemctl enable consul
 sudo systemctl start consul
 sudo systemctl status consul
-
 sh -c 'sudo tail -f /var/log/consul.log | { sed "/agent: Synced/ q" && kill $$ ;}'
 consul join $VAGRANT_IP
 consul members
 consul info
 
-consul kv put fabio/config/nomad "route add nomad nomad.service.consul:9999/ http://${VAGRANT_IP}:4646"
-consul kv put fabio/config/consul "route add consul consul.service.consul:9999/ http://${VAGRANT_IP}:8500"
-echo -e '\e[38;5;198m'"++++ Consul http://localhost:8500"
+################# Adding Consul KV
+
+#consul kv put fabio/config/nomad "route add nomad nomad.service.consul:9999/ http://${VAGRANT_IP}:4646"
+#consul kv put fabio/config/consul "route add consul consul.service.consul:9999/ http://${VAGRANT_IP}:8500"
+
+
+echo -e '\e[38;5;198m'"++++ Consul http://$VAGRANT_IP:8500"
 }
 consul-install

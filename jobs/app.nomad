@@ -21,8 +21,8 @@ job "app" {
               ports = ["http"]
              }
        env {
-            APP_URL = "http://192.168.56.210"
-            DB_HOST = "192.168.56.210"
+            APP_URL = "http://${VAGRANT_IP}"
+            DB_HOST = "${VAGRANT_IP}"
             DB_USER = "bookstack"
             DB_PASS = "dbpass"
             DB_DATABASE = "bookstackapp"
