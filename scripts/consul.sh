@@ -3,13 +3,9 @@
 
 function consul-install() {
 
-############ Installing requirements
-
-sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install curl unzip jq
+############ Creating Consul config file
 mkdir -p /etc/consul
 mkdir -p /etc/consul.d
-
-############ Creating Consul config file
 
 cat <<EOF | sudo tee /etc/consul/server.hcl
 primary_datacenter = "dc1"

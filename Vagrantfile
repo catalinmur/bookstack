@@ -100,8 +100,10 @@ Vagrant::configure("2") do |config|
       config.vm.provision "consul", type: "shell", preserve_order: true, privileged: true, path: "scripts/consul.sh"
 
       # install nomad
-      # vagrant up --provision-with nomad to only run this on vagrant up
       config.vm.provision "nomad", type: "shell", preserve_order: true, privileged: true, path: "scripts/nomad.sh"
+
+      # install consul-template
+      config.vm.provision "consul-template", type: "shell", preserve_order: true, privileged: true, path: "scripts/consul-template.sh"
 
       # vagrant up --provision-with bootstrap to only run this on vagrant up
       config.vm.provision "welcome", preserve_order: true, type: "shell", privileged: true, inline: <<-SHELL

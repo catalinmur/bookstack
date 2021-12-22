@@ -2,11 +2,6 @@
 
 function nomad-install() {
 
-########### Installing Requirements
-sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install curl unzip jq
-yes | sudo docker system prune -a
-yes | sudo docker system prune --volumes
-
 ########### Creating nomad config file
 mkdir -p /etc/nomad
 cat <<EOF | sudo tee -a /etc/nomad/server.conf
