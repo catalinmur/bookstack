@@ -50,15 +50,15 @@ EOF
 
 ########### Installing Nomad
 LATEST_URL=$(curl -sL https://releases.hashicorp.com/nomad/index.json | jq -r '.versions[].builds[].url' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | egrep -v 'rc|beta' | egrep 'linux.*amd64' | sort -V | tail -n 1)
-wget -q $LATEST_URL -O /tmp/nomad.zip
+wget -q $LATEST_URL -O nomad.zip
 mkdir -p /usr/local/bin
-(cd /usr/local/bin && unzip /tmp/nomad.zip)
+unzip nomad.zip -d /usr/local/bin/ && rm -f nomad.zip
 echo -e '\e[38;5;198m'"++++ Installed `/usr/local/bin/nomad version`"
 
 ########### Installing CNI Plugins
-wget -q https://github.com/containernetworking/plugins/releases/download/v0.8.1/cni-plugins-linux-amd64-v0.8.1.tgz -O /tmp/cni-plugins.tgz
+wget -q https://github.com/containernetworking/plugins/releases/download/v0.8.1/cni-plugins-linux-amd64-v0.8.1.tgz -O cni-plugins.tgz
 mkdir -p /opt/cni/bin
-tar -C /opt/cni/bin -xzf /tmp/cni-plugins.tgz
+tar -C /opt/cni/bin -xzf cni-plugins.tgz
 echo 1 > /proc/sys/net/bridge/bridge-nf-call-arptables
 echo 1 > /proc/sys/net/bridge/bridge-nf-call-ip6tables
 echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
@@ -76,8 +76,8 @@ After=network-online.target
 # When using Nomad with Consul it is not necessary to start Consul first. These
 # lines start Consul before Nomad as an optimization to avoid Nomad logging
 # that Consul is unavailable at startup.
-#Wants=consul.service
-#After=consul.service
+Wants=consul.service
+After=consul.service
 
 [Service]
 
@@ -116,7 +116,7 @@ OOMScoreAdjust=-1000
 [Install]
 WantedBy=multi-user.target
 EOF
-
+sleep 5
 sudo systemctl enable nomad
 sudo systemctl start nomad
 sudo systemctl status nomad
