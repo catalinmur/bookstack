@@ -21,11 +21,11 @@ job "app" {
               ports = ["http"]
              }
        env {
-            APP_URL = "http://${VAGRANT_IP}"
-            DB_HOST = "${VAGRANT_IP}"
-            DB_USER = "bookstack"
-            DB_PASS = "dbpass"
-            DB_DATABASE = "bookstackapp"
+            APP_URL = "http://{{ key "/config/vagrant_ip" }}"
+            DB_HOST = "{{ key "/config/vagrant_ip" }}"
+            DB_USER = "{{ key "/config/database/user" }}"
+            DB_PASS = "{{ key "/config/database/pass" }}"
+            DB_DATABASE = "{{ key "/config/database/name" }}"
          }
        resources {
             cpu    = 500

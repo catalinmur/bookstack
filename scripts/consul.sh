@@ -79,11 +79,6 @@ consul join $VAGRANT_IP
 consul members
 consul info
 
-################# Adding Consul KV
-
-#consul kv put fabio/config/nomad "route add nomad nomad.service.consul:9999/ http://${VAGRANT_IP}:4646"
-#consul kv put fabio/config/consul "route add consul consul.service.consul:9999/ http://${VAGRANT_IP}:8500"
-
 
 echo -e '\e[38;5;198m'"++++ Consul http://$VAGRANT_IP:8500"
 }

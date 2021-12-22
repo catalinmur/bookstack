@@ -22,10 +22,10 @@ job "mysql" {
          ports = ["db"]
          }
       env {
-           MYSQL_ROOT_PASSWORD = "rootpass"
-           MYSQL_DATABASE = "bookstackapp"
-           MYSQL_USER = "bookstack"
-           MYSQL_PASSWORD = "dbpass"
+           MYSQL_ROOT_PASSWORD = "{{ key "/config/database/root_pass" }}"
+           MYSQL_DATABASE = "{{ key "/config/database/name" }}"
+           MYSQL_USER = "{{ key "/config/database/user"}}"
+           MYSQL_PASSWORD = "{{ key "/config/database/pass"}}"
            }
       resources {
            cpu    = 500

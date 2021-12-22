@@ -124,16 +124,6 @@ sudo systemctl status nomad
 nomad server members
 nomad node status
 
-#mkdir /etc/nomad/jobs
-#curl -so /etc/nomad/jobs/mysql.nomad https://raw.githubusercontent.com/catalinmur/bookstack/main/jobs/mysql.nomad
-#curl -so /etc/nomad/jobs/app.nomad https://raw.githubusercontent.com/catalinmur/bookstack/main/jobs/app.nomad
-
-#nomad plan --address=http://$VAGRANT_IP:4646 /etc/nomad/jobs/mysql.nomad
-#nomad run --address=http://$VAGRANT_IP:4646 /etc/nomad/jobs/mysql.nomad
-#sleep 5s
-#nomad plan --address=http://$VAGRANT_IP:4646 /etc/nomad/jobs/app.nomad
-#nomad run --address=http://$VAGRANT_IP:4646 /etc/nomad/jobs/app.nomad
-
 echo -e '\e[38;5;198m'"++++ Nomad http://$VAGRANT_IP:4646"
 }
 
