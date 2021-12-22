@@ -129,13 +129,13 @@ mkdir /etc/nomad/jobs
 cp jobs/app.nomad /etc/nomad/jobs/
 cp jobs/mysql.nomad /etc/nomad/jobs/
 
-nomad plan --address=http://localhost:4646 /etc/nomad/jobs/mysql.nomad
-nomad run --address=http://localhost:4646 /etc/nomad/jobs/mysql.nomad
+nomad plan --address=http://$VAGRANT_IP:4646 /etc/nomad/jobs/mysql.nomad
+nomad run --address=http://$VAGRANT_IP:4646 /etc/nomad/jobs/mysql.nomad
 sleep 5s
-nomad plan --address=http://localhost:4646 /etc/nomad/jobs/app.nomad
-nomad run --address=http://localhost:4646 /etc/nomad/jobs/app.nomad
+nomad plan --address=http://$VAGRANT_IP:4646 /etc/nomad/jobs/app.nomad
+nomad run --address=http://$VAGRANT_IP:4646 /etc/nomad/jobs/app.nomad
 
-echo -e '\e[38;5;198m'"++++ Nomad http://localhost:4646"
+echo -e '\e[38;5;198m'"++++ Nomad http://$VAGRANT_IP:4646"
 }
 
 nomad-install

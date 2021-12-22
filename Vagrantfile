@@ -105,9 +105,9 @@ Vagrant::configure("2") do |config|
 
       # vagrant up --provision-with bootstrap to only run this on vagrant up
       config.vm.provision "welcome", preserve_order: true, type: "shell", privileged: true, inline: <<-SHELL
-        echo -e '\e[38;5;198m'"Consul http://localhost:8500"
-        echo -e '\e[38;5;198m'"Nomad http://localhost:4646"
-        echo -e '\e[38;5;198m'"Bookstack http://localhost:6875"
+        echo -e '\e[38;5;198m'"Consul http://$VAGRANT_IP:8500"
+        echo -e '\e[38;5;198m'"Nomad http://$VAGRANT_IP:4646"
+        echo -e '\e[38;5;198m'"Bookstack http://$VAGRANT_IP:6875"
       SHELL
 
     end
